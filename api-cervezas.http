@@ -1,0 +1,201 @@
+### API de Gestión de Cervezas
+### Este archivo puede usarse con la extensión REST Client de VS Code/Cursor
+### Instala la extensión: "REST Client" de Huachao Mao
+
+@baseUrl = http://localhost:3000
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NDM3NzQ4MSwiZXhwIjoxNzc0OTgyMjgxfQ._h2t2EJP50nU8ECe3Wf2A_tqKYLcC7cE8sBRgHJvyx8
+
+### ============================================
+### OBTENER CERVEZAS
+### ============================================
+
+### Obtener todas las cervezas
+GET {{baseUrl}}/api/cervezas
+
+### Obtener cerveza por ID (reemplaza con un ID real)
+GET {{baseUrl}}/api/cervezas/507f1f77bcf86cd799439011
+
+### ============================================
+### CREAR CERVEZAS
+### ============================================
+
+### Lager 1
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Estrella Damm",
+  "descripcion": "Cerveza lager catalana de sabor suave y refrescante",
+  "graduacion": 5.4,
+  "tipo": "Lager"
+}
+
+###
+
+### Lager 2
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Corona",
+  "descripcion": "Cerveza mexicana ligera, ideal para tomar con limón",
+  "graduacion": 4.5,
+  "tipo": "Lager"
+}
+
+###
+
+### IPA 1
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Verna",
+  "descripcion": "IPA artesanal con notas cítricas y amargor pronunciado",
+  "graduacion": 6.5,
+  "tipo": "IPA"
+}
+
+###
+
+### IPA 2
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "BrewDog Punk IPA",
+  "descripcion": "IPA escocesa con aromas tropicales y final amargo",
+  "graduacion": 5.6,
+  "tipo": "IPA"
+}
+
+###
+
+### Stout 1
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Guinness",
+  "descripcion": "Stout irlandesa con notas de café y chocolate tostado",
+  "graduacion": 4.2,
+  "tipo": "Stout"
+}
+
+###
+
+### Stout 2
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Murphy's Irish Stout",
+  "descripcion": "Stout suave y cremosa con ligeras notas de malta",
+  "graduacion": 4.0,
+  "tipo": "Stout"
+}
+
+###
+
+### Weizen 1
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Paulaner",
+  "descripcion": "Cerveza de trigo bávara con notas de plátano y clavo",
+  "graduacion": 5.5,
+  "tipo": "Weizen"
+}
+
+###
+
+### Weizen 2
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Erdinger",
+  "descripcion": "Weizen alemana con espuma cremosa y sabor afrutado",
+  "graduacion": 5.3,
+  "tipo": "Weizen"
+}
+
+###
+
+### Trappist 1
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Chimay",
+  "descripcion": "Cerveza trapense belga con cuerpo intenso y notas especiadas",
+  "graduacion": 7.0,
+  "tipo": "Trappist"
+}
+
+###
+
+### Trappist 2
+POST {{baseUrl}}/api/cervezas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Leffe Brune",
+  "descripcion": "Cerveza abadía belga oscura con aromas de caramelo y vainilla",
+  "graduacion": 6.5,
+  "tipo": "Trappist"
+}
+
+### ============================================
+### ACTUALIZAR CERVEZA
+### ============================================
+
+### Actualizar cerveza 1 (reemplaza con un ID real)
+PUT {{baseUrl}}/api/cervezas/69c2c8696c5225d9cbc91f89
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Estrella Damm Editada",
+  "descripcion": "Cerveza lager catalana de sabor suave y refrescante",
+  "graduacion": 5.4,
+  "tipo": "Lager"
+}
+
+###
+
+### Actualizar cerveza 2 (reemplaza con un ID real)
+PUT {{baseUrl}}/api/cervezas/507f1f77bcf86cd799439012
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Guinness Editada",
+  "descripcion": "Versión editada de la stout irlandesa más famosa",
+  "graduacion": 4.2,
+  "tipo": "Stout"
+}
+
+### ============================================
+### ELIMINAR CERVEZA
+### ============================================
+
+### Eliminar cerveza 1 (reemplaza con un ID real)
+DELETE {{baseUrl}}/api/cervezas/507f1f77bcf86cd799439011
+Authorization: Bearer {{token}}
+
+### Eliminar cerveza 2 (reemplaza con un ID real)
+DELETE {{baseUrl}}/api/cervezas/69c2da35f47d71fa2ccac852
+Authorization: Bearer {{token}}

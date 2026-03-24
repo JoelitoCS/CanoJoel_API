@@ -1,0 +1,203 @@
+### API de Gestión de Vinos
+### Este archivo puede usarse con la extensión REST Client de VS Code/Cursor
+### Instala la extensión: "REST Client" de Huachao Mao
+
+@baseUrl = http://localhost:3000
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NDM3NzQ4MSwiZXhwIjoxNzc0OTgyMjgxfQ._h2t2EJP50nU8ECe3Wf2A_tqKYLcC7cE8sBRgHJvyx8
+
+### ============================================
+### OBTENER VINOS
+### ============================================
+
+### Obtener todos los vinos
+
+GET {{baseUrl}}/api/vinos
+
+
+### Obtener vino por ID (reemplaza con un ID real)
+GET {{baseUrl}}/api/vinos/507f1f77bcf86cd799439011
+
+### ============================================
+### CREAR VINOS
+### ============================================
+
+### Rioja 1
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Marqués de Riscal",
+  "descripcion": "Vino tinto riojano con crianza en roble, notas de frutos rojos y vainilla",
+  "graduacion": 13.5,
+  "tipo": "Rioja"
+}
+
+###
+
+### Rioja 2
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "La Rioja Alta",
+  "descripcion": "Tinto elegante con larga crianza, aromas complejos y final persistente",
+  "graduacion": 13.0,
+  "tipo": "Rioja"
+}
+
+###
+
+### Ribera del Duero 1
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Vega Sicilia",
+  "descripcion": "Icónico vino español con gran estructura, taninos sedosos y crianza excepcional",
+  "graduacion": 14.5,
+  "tipo": "Ribera del Duero"
+}
+
+###
+
+### Ribera del Duero 2
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Pesquera",
+  "descripcion": "Tinto intenso de tempranillo con notas de cereza negra y especias",
+  "graduacion": 14.0,
+  "tipo": "Ribera del Duero"
+}
+
+###
+
+### Albariño 1
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Martín Códax",
+  "descripcion": "Blanco gallego fresco y afrutado con notas cítricas y florales",
+  "graduacion": 12.5,
+  "tipo": "Albariño"
+}
+
+###
+
+### Albariño 2
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Pazo de Señoans",
+  "descripcion": "Albariño elegante con gran acidez, aromas de melocotón y hierba fresca",
+  "graduacion": 12.0,
+  "tipo": "Albariño"
+}
+
+###
+
+### Cava 1
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Freixenet",
+  "descripcion": "Cava catalán brut con burbujas finas y notas de manzana verde y tostado",
+  "graduacion": 11.5,
+  "tipo": "Cava"
+}
+
+###
+
+### Cava 2
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Codorníu",
+  "descripcion": "Cava clásico con equilibrio perfecto entre frescura y cremosidad",
+  "graduacion": 11.5,
+  "tipo": "Cava"
+}
+
+###
+
+### Tempranillo 1
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Roda",
+  "descripcion": "Tempranillo riojano moderno con fruta madura, roble bien integrado y gran longitud",
+  "graduacion": 14.0,
+  "tipo": "Tempranillo"
+}
+
+###
+
+### Tempranillo 2
+POST {{baseUrl}}/api/vinos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Contino",
+  "descripcion": "Vino de finca con personalidad única, elegante y con gran potencial de guarda",
+  "graduacion": 13.5,
+  "tipo": "Tempranillo"
+}
+
+### ============================================
+### ACTUALIZAR VINO
+### ============================================
+
+### Actualizar vino 1 (reemplaza con un ID real)
+PUT {{baseUrl}}/api/vinos/507f1f77bcf86cd799439011
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Marqués de Riscal Premium",
+  "descripcion": "Edición premium del clásico riojano con mayor tiempo de crianza en barrica",
+  "graduacion": 14.0,
+  "tipo": "Rioja"
+}
+
+###
+
+### Actualizar vino 2 (reemplaza con un ID real)
+PUT {{baseUrl}}/api/vinos/507f1f77bcf86cd799439012
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Vega Sicilia Reserva",
+  "descripcion": "Reserva especial con crianza extendida, complejidad máxima y carácter único",
+  "graduacion": 15.0,
+  "tipo": "Ribera del Duero"
+}
+
+### ============================================
+### ELIMINAR VINO
+### ============================================
+
+### Eliminar vino 1 (reemplaza con un ID real)
+DELETE {{baseUrl}}/api/vinos/507f1f77bcf86cd799439011
+Authorization: Bearer {{token}}
+
+### Eliminar vino 2 (reemplaza con un ID real)
+DELETE {{baseUrl}}/api/vinos/507f1f77bcf86cd799439012
+Authorization: Bearer {{token}}

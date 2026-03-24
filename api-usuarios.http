@@ -1,0 +1,53 @@
+### API de Usuarios
+### Este archivo puede usarse con la extensión REST Client de VS Code/Cursor
+### Instala la extensión: "REST Client" de Huachao Mao
+
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### 1. Registro de Usuarios
+POST {{baseUrl}}/api/auth/registro
+Content-Type: {{contentType}}
+
+{
+  "email": "joel22@example.com",
+  "password": "contrasenya123"
+}
+
+### 2. Login de Usuarios
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "joel22@example.com",
+  "password": "contrasenya123"
+}
+
+### 3. Actualizar Perfil (requiere token del login)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NDM3MjkwNCwiZXhwIjoxNzc0OTc3NzA0fQ.Q025NXNIAP1g4Xzi6Hy2e3SCKPYIOuj3QXXcrHQLQqE
+PUT {{baseUrl}}/api/auth/perfil
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "email": "nuevo.emai2l@example.com",
+  "password": "nuevacontrasenya456"
+}
+
+### 4. Prueba con email duplicado (debe fallar)
+POST {{baseUrl}}/api/auth/registro
+Content-Type: {{contentType}}
+
+{
+  "email": "juan.perez@example.com",
+  "password": "otracontrasenya"
+}
+
+### 5. Login con credenciales incorrectas (debe fallar)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "juan.perez@example.com",
+  "password": "contrasenya_incorrecta"
+}

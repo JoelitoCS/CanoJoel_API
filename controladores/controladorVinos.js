@@ -71,4 +71,30 @@ const deleteVino = async (req, res) => {
   }
 };
 
-export { getVinos, getVinoById, createVino, updateVino, deleteVino }
+const updateVinoWithImage = async (req, res) => {
+  try {
+    // Si no arriba fitxer (camp incorrecte, filtre rebutjat, etc.), retornem error de client
+    if (!req.file) {
+      return res.status(400).json({ error: 'Cap fitxer pujat' });
+    }
+
+    // IMPORTANT: desem només la ruta relativa, no la ruta absoluta del sistema operatiu
+    // Amb això el client podrà construir la URL pública: /uploads/<filename>
+    const pathImatge = 'uploads/' + req.file.filename;
+
+    // Actualitzem només el camp imatge del vino indicat per id
+    const actualitzada = await Vino.findByIdAndUpdate(
+      req.params.id,
+      { imagen: pathImatge },
+      { new: true }  // retornar el document amb el camp imatge ja actualitzat
+    );
+    if (!actualitzada) {
+      return res.status(404).json({ error: 'Vino no trobat' });
+    }
+    res.json(actualitzada);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export { getVinos, getVinoById, createVino, updateVino, deleteVino, updateVinoWithImage }

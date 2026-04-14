@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Cerveza from "../modelos/modeloCervezas.js"
 
+
 // Comprova si un id té format vàlid de MongoDB ObjectId
 const esIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -71,4 +72,30 @@ const deleteCerveza = async (req, res) => {
   }
 };
 
-export { getCervezas, getCervezaById, createCerveza, updateCerveza, deleteCerveza }
+const updateCervezaWithImage = async (req, res) => {
+  try {
+    // Si no arriba fitxer (camp incorrecte, filtre rebutjat, etc.), retornem error de client
+    if (!req.file) {
+      return res.status(400).json({ error: 'Cap fitxer pujat' });
+    }
+
+    // IMPORTANT: desem només la ruta relativa, no la ruta absoluta del sistema operatiu
+    // Amb això el client podrà construir la URL pública: /uploads/<filename>
+    const pathImatge = 'uploads/' + req.file.filename;
+
+    // Actualitzem només el camp imatge de la cervesa indicada per id
+    const actualitzada = await Cerveza.findByIdAndUpdate(
+      req.params.id,
+      { imatge: pathImatge },
+      { new: true }  // retornar el document amb el camp imatge ja actualitzat
+    );
+    if (!actualitzada) {
+      return res.status(404).json({ error: 'Cervesa no trobada' });
+    }
+    res.json(actualitzada);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export { getCervezas, getCervezaById, createCerveza, updateCerveza, deleteCerveza, updateCervezaWithImage };

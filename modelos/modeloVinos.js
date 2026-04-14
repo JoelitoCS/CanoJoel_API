@@ -16,6 +16,10 @@ const vinoSchema = new mongoose.Schema({
     tipo: {
         type: String,
         required: true
+    },
+    imagen: {
+        type: String,
+        trim: true
     }
 })
 

@@ -16,6 +16,13 @@ const cervezaSchema = new mongoose.Schema({
     tipo: {
         type: String,
         required: true
+    },
+    imagen: {
+        type: String,
+        trim: true,
+        // Guardem la ruta relativa per servir-la amb express.static
+        // p. ex. "uploads/123456-nom.jpg" (NO cal desar la URL completa)
+        // Això permet canviar domini/port sense tocar la base de dades
     }
 })
 

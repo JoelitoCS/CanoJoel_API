@@ -4,7 +4,7 @@
 
 @baseUrl = http://localhost:3000
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NDM3NzQ4MSwiZXhwIjoxNzc0OTgyMjgxfQ._h2t2EJP50nU8ECe3Wf2A_tqKYLcC7cE8sBRgHJvyx8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NjE2MzYxNywiZXhwIjoxNzc2NzY4NDE3fQ.KCE8_sN4AHi2jXF9jTSPc6yoONJEPShhUlbx_9lkJyU
 
 ### ============================================
 ### OBTENER CERVEZAS

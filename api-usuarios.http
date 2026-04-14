@@ -1,53 +1,74 @@
 ### API de Usuarios
-### Este archivo puede usarse con la extensión REST Client de VS Code/Cursor
-### Instala la extensión: "REST Client" de Huachao Mao
-
 @baseUrl = http://localhost:3000
-@contentType = application/json
+@tokenUser = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGUzNjM4MzJkOGJmMGM1NGFiMDY2MSIsImlhdCI6MTc3NjE3MDU4NiwiZXhwIjoxNzc2Nzc1Mzg2fQ.vqJLRQjMD05QiEYKutI7z3BZ5-aGgF_JxJgp0chIXps
+@tokenAdmin = TOKEN_ADMIN_AQUI
 
-### 1. Registro de Usuarios
+### REGISTRO (con archivo real)
 POST {{baseUrl}}/api/auth/registro
-Content-Type: {{contentType}}
+Content-Type: multipart/form-data; boundary=----123
 
-{
-  "email": "joel22@example.com",
-  "password": "contrasenya123"
-}
+------123
+Content-Disposition: form-data; name="email"
 
-### 2. Login de Usuarios
+joel@example.com
+------123
+Content-Disposition: form-data; name="password"
+
+123456
+------123
+Content-Disposition: form-data; name="foto"; filename="foto.png"
+Content-Type: image/png
+
+< ./foto.png
+------123--
+
+
+### LOGIN
 POST {{baseUrl}}/api/auth/login
-Content-Type: {{contentType}}
+Content-Type: application/json
 
 {
-  "email": "joel22@example.com",
-  "password": "contrasenya123"
+  "email": "joel@example.com",
+  "password": "123456"
 }
 
-### 3. Actualizar Perfil (requiere token del login)
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjlhYmExODgwMWQzODBlY2YxMmQzYiIsImlhdCI6MTc3NDM3MjkwNCwiZXhwIjoxNzc0OTc3NzA0fQ.Q025NXNIAP1g4Xzi6Hy2e3SCKPYIOuj3QXXcrHQLQqE
+
+### ACTUALIZAR PERFIL (con archivo real)
 PUT {{baseUrl}}/api/auth/perfil
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----123
+Authorization: Bearer {{tokenUser}}
 
-{
-  "email": "nuevo.emai2l@example.com",
-  "password": "nuevacontrasenya456"
-}
+------123
+Content-Disposition: form-data; name="email"
 
-### 4. Prueba con email duplicado (debe fallar)
+nuevo.email@example.com
+------123
+Content-Disposition: form-data; name="password"
+
+nueva123
+------123
+Content-Disposition: form-data; name="foto"; filename="foto.png"
+Content-Type: image/png
+
+< ./foto.png
+------123--
+
+
+### REGISTRO DUPLICADO (debe fallar)
 POST {{baseUrl}}/api/auth/registro
-Content-Type: {{contentType}}
+Content-Type: multipart/form-data; boundary=----123
 
-{
-  "email": "juan.perez@example.com",
-  "password": "otracontrasenya"
-}
+------123
+Content-Disposition: form-data; name="email"
 
-### 5. Login con credenciales incorrectas (debe fallar)
-POST {{baseUrl}}/api/auth/login
-Content-Type: {{contentType}}
+joel@example.com
+------123
+Content-Disposition: form-data; name="password"
 
-{
-  "email": "juan.perez@example.com",
-  "password": "contrasenya_incorrecta"
-}
+otra123
+------123
+Content-Disposition: form-data; name="foto"; filename="foto.png"
+Content-Type: image/png
+
+< ./foto.png
+------123--

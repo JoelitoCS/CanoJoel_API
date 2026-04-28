@@ -1,44 +1,37 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import Usuario from '../modelos/modeloUsuarios.js';
 import { protegir } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Configuración de Multer para fotos de perfil
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads/perfiles'));
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `perfil-${Date.now()}${ext}`);
+// Función para validar Base64 de imagen
+const validarFotoBase64 = (fotoBase64) => {
+  if (!fotoBase64) return true; // opcional
+  
+  // Máximo 5MB en Base64 (aprox 6.7MB de string)
+  if (fotoBase64.length > 6.7 * 1024 * 1024) {
+    throw new Error('La imatge és massa gran (màxim 5MB)');
   }
-});
-
-const fileFilter = (req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-  if (allowed.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Tipus de fitxer no permès. Només imatges (jpeg, png, webp, gif)'), false);
+  
+  // Verificar que sea un data URL válido
+  if (!fotoBase64.startsWith('data:image/')) {
+    throw new Error('Format d\'imatge no vàlid. Usa data:image/*');
   }
+  
+  // Verificar MIME type permitido
+  const mimeTypes = ['data:image/jpeg', 'data:image/png', 'data:image/webp', 'data:image/gif'];
+  if (!mimeTypes.some(mime => fotoBase64.startsWith(mime))) {
+    throw new Error('Tipus de fitxer no permès. Només jpeg, png, webp, gif');
+  }
+  
+  return true;
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB máximo
-});
-
 // POST /api/auth/registro
-router.post('/registro', upload.single('foto'), async (req, res) => {
+router.post('/registro', async (req, res) => {
   try {
-    const { email, password, nombre } = req.body;
+    const { email, password, nombre, foto } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'Email i contrasenya requerits' });
     }
@@ -46,8 +39,18 @@ router.post('/registro', upload.single('foto'), async (req, res) => {
     if (existent) {
       return res.status(400).json({ error: 'Aquest email ja està registrat' });
     }
-    const fotoRuta = req.file ? `/uploads/perfiles/${req.file.filename}` : '';
-    const usuari = await Usuario.create({ email, password, nombre: nombre || '', foto: fotoRuta });
+    
+    // Validar foto si se proporciona
+    if (foto) {
+      validarFotoBase64(foto);
+    }
+    
+    const usuari = await Usuario.create({ 
+      email, 
+      password, 
+      nombre: nombre || '', 
+      foto: foto || '' 
+    });
     const token = jwt.sign({ id: usuari._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({
       token,
@@ -87,10 +90,10 @@ router.get('/perfil', protegir, async (req, res) => {
 });
 
 // PUT /api/auth/perfil
-router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
+router.put('/perfil', protegir, async (req, res) => {
   try {
     const usuari = req.usuari;
-    const { email, password, nombre } = req.body;
+    const { email, password, nombre, foto } = req.body;
 
     if (email && email !== usuari.email) {
       const existent = await Usuario.findOne({ email });
@@ -99,7 +102,10 @@ router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
     }
     if (password) usuari.password = password;
     if (nombre !== undefined) usuari.nombre = nombre;
-    if (req.file) usuari.foto = `/uploads/perfiles/${req.file.filename}`;
+    if (foto) {
+      validarFotoBase64(foto);
+      usuari.foto = foto;
+    }
 
     await usuari.save();
     const token = jwt.sign({ id: usuari._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -110,14 +116,6 @@ router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-});
-
-// Manejo de errores de Multer
-router.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError || err.message?.includes('fitxer')) {
-    return res.status(400).json({ error: err.message });
-  }
-  next(err);
 });
 
 export default router;

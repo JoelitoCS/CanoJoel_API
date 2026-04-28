@@ -1,8 +1,6 @@
 import express from "express"
 import 'dotenv/config';
-import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 import { ConnectDB } from "./config/db.js"
 import routerCervezas from "./routes/routesCervezas.js"
 import routerVinos from "./routes/routesVinos.js"
@@ -10,15 +8,9 @@ import authRoutes from './routes/authRoutes.js';
 import routerPedidos from './routes/routesPedidos.js';
 import routerUsuaris from './routes/routesUsuaris.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = fileURLToPath(import.meta.url);
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL;
-
-// Asegurar que existe la carpeta uploads/perfiles
-const uploadsDir = path.join(__dirname, 'uploads', 'perfiles');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
 
 ConnectDB();
 
@@ -35,9 +27,6 @@ app.use((req, res, next) => {
 
 // Middleware JSON
 app.use(express.json());
-
-// Servir archivos estáticos (fotos de perfil, etc.)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rutas
 app.use("/api/cervezas", routerCervezas);

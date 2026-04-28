@@ -1,5 +1,6 @@
 import express from "express"
 import 'dotenv/config';
+import path from 'path';
 import { fileURLToPath } from 'url';
 import { ConnectDB } from "./config/db.js"
 import routerCervezas from "./routes/routesCervezas.js"
@@ -8,7 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 import routerPedidos from './routes/routesPedidos.js';
 import routerUsuaris from './routes/routesUsuaris.js';
 
-const __dirname = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 

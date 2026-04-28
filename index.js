@@ -45,6 +45,14 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Middleware de error para JSON parsing
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'JSON inválido' });
+  }
+  next(err);
+});
+
 // Rutas
 app.use("/api/cervezas", routerCervezas);
 app.use("/api/vinos", routerVinos);

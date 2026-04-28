@@ -3,27 +3,34 @@
 @tokenUser = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGUzNjM4MzJkOGJmMGM1NGFiMDY2MSIsImlhdCI6MTc3NjE3MDU4NiwiZXhwIjoxNzc2Nzc1Mzg2fQ.vqJLRQjMD05QiEYKutI7z3BZ5-aGgF_JxJgp0chIXps
 @tokenAdmin = TOKEN_ADMIN_AQUI
 
-### REGISTRO (con archivo real)
+### REGISTRO SIN FOTO (PRUEBA BÁSICA)
 POST {{baseUrl}}/api/auth/registro
 Content-Type: multipart/form-data; boundary=----123
 
 ------123
 Content-Disposition: form-data; name="email"
 
-joelcanosan2@gmail.com
+test@gmail.com
 ------123
 Content-Disposition: form-data; name="password"
 
 123456
 ------123
-Content-Disposition: form-data; name="foto"; filename="foto.png"
-Content-Type: image/png
-Content-Disposition: form-data; name="rol"
+Content-Disposition: form-data; name="nombre"
 
-admin 
-
-< ./foto.png
+Test User
 ------123--
+
+
+### REGISTRO CON FOTO (JSON)
+POST {{baseUrl}}/api/auth/registro
+Content-Type: application/json
+
+{
+  "email": "testfoto@gmail.com",
+  "password": "123456",
+  "nombre": "Test Con Foto"
+}
 
 
 ### LOGIN

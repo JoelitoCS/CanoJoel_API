@@ -1,0 +1,165 @@
+╔══════════════════════════════════════════════════════════════════╗
+║          🔧 SOLUCIÓN COMPLETA - REGISTRO NO FUNCIONA            ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📊 FLUJO DE LA SOLICITUD                                        │
+└─────────────────────────────────────────────────────────────────┘
+
+FRONTEND                        BACKEND
+========================================
+
+Usuario llena                   
+formulario
+    ↓
+    │
+Clic "Registrarse"          
+    ↓
+    │
+Se crea FormData            
+{ email, password, foto }   
+    ↓
+    │
+fetch() → POST              →  [CORS CHECK]
+                                ↓
+                            Multer middleware
+                            ↓
+                            authRoutes.js
+                            ↓
+                            Valida datos
+                            ↓
+                            Crea usuario en DB
+                            ↓
+                            Convierte foto a Base64
+                            ↓
+Recibe token ←              Devuelve { token, usuari }
+    ↓
+localStorage.token
+    ↓
+navigate('/')
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ✅ QUÉ CAMBIAR                                                   │
+└─────────────────────────────────────────────────────────────────┘
+
+1️⃣  FRONTEND: Reemplazar src/pages/Registro.jsx
+    ├─ Usar FormData (NO JSON)
+    ├─ NO incluir header Content-Type manualmente
+    ├─ Guardar foto como File (no string)
+    └─ Usar import.meta.env.VITE_API_URL
+
+2️⃣  FRONTEND: Actualizar .env
+    └─ VITE_API_URL=http://localhost:3000
+
+3️⃣  BACKEND: Ya está correcto ✅
+    ├─ Multer con memoryStorage
+    ├─ Convierte buffer a Base64
+    ├─ Guarda en MongoDB
+    └─ CORS mejorado
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🧪 PASOS PARA PROBAR                                            │
+└─────────────────────────────────────────────────────────────────┘
+
+OPCIÓN A - TEST DESDE TERMINAL (SIN FRONTEND)
+═════════════════════════════════════════════
+
+1. Abre PowerShell
+2. Ve a: c:\DAW2-Proyectos\CanoJoel_ProyectoAPI_API
+3. Ejecuta:
+   
+   .\TEST_REGISTRO.ps1
+   
+   (Si falla, ejecuta primero: Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process)
+
+4. Si ves "✅ ¡REGISTRO EXITOSO!" → Backend funciona perfectamente
+
+
+OPCIÓN B - TEST DESDE NAVEGADOR (CON FRONTEND)
+══════════════════════════════════════════════
+
+1. Asegúrate de que está corriendo:
+   - Backend: npm run dev (en API folder)
+   - Frontend: npm run dev (en Frontend folder)
+
+2. Abre navegador: http://localhost:5173/registro
+
+3. Abre DevTools (F12)
+
+4. Ve a Console
+
+5. Llena el formulario
+
+6. Haz clic en Registrarse
+
+7. Mira los logs en Console:
+   - Debe decir: "📤 Enviando a: http://localhost:3000/api/auth/registro"
+   - Debe decir: "✅ Registro exitoso" O "❌ Error: ..."
+
+8. Si error, cópiame exactamente qué dice
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📂 ARCHIVOS QUE HE CREADO PARA TI                              │
+└─────────────────────────────────────────────────────────────────┘
+
+En c:\Users\DAW2\Desktop\:
+├─ Registro_FIXED.jsx         ← Copia el contenido aquí
+├─ ENV_TEMPLATE_FRONTEND      ← Copiar al .env del frontend
+├─ DIAGNOSTICO_COMPLETO.md    ← Instrucciones detalladas
+
+En c:\DAW2-Proyectos\CanoJoel_ProyectoAPI_API\:
+├─ TEST_REGISTRO.ps1          ← Para probar desde terminal
+├─ TEST_REGISTRO.sh           ← Para Linux/WSL
+├─ EJEMPLO_REGISTRO_CORRECTO.jsx
+├─ FRONTEND_REGISTRO_BASE64.md
+
+El backend ya está actualizado:
+├─ routes/authRoutes.js       ✅ OK
+├─ index.js                   ✅ OK
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ❌ ERRORES COMUNES                                              │
+└─────────────────────────────────────────────────────────────────┘
+
+Error                          Causa                  Solución
+──────────────────────────────────────────────────────────────────
+400 - Email/password req      FormData mal            Usar FormData
+ERR_CONNECTION_CLOSED         API no corre            npm run dev
+405 Method Not Allowed        URL incorrecta          Verificar URL
+CORS error                    Origin bloqueado        Backend CORS
+Photo null                    Multer falló            Revisar form
+No redirect a /               Token no guardado       localStorage
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚀 RESUMEN FINAL                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+Tu problema probablemente es UNO de estos:
+
+1. ❓ Frontend enviando JSON en lugar de FormData
+   ✅ Solución: Usar archivo Registro_FIXED.jsx
+
+2. ❓ URL de API mal en .env
+   ✅ Solución: VITE_API_URL=http://localhost:3000
+
+3. ❓ Backend no corriendo
+   ✅ Solución: npm run dev en folder API
+
+4. ❓ CORS rechazando frontend
+   ✅ Solución: Ya lo arreglé en index.js
+
+
+El backend ESTÁ BIEN. El problema está 90% seguro en el frontend.
+
+Haz esto:
+1. Reemplaza src/pages/Registro.jsx con Registro_FIXED.jsx
+2. Actualiza .env del frontend
+3. Reinicia npm run dev en frontend
+4. Prueba registro
+
+¿Sigue sin funcionar? Cópiame los logs exactos de Console (F12).

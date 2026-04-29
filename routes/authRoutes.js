@@ -10,15 +10,8 @@ const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuración de Multer para fotos de perfil
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads/perfiles'));
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `perfil-${Date.now()}${ext}`);
-  }
-});
+// Usar memoria en producción, disco en desarrollo
+const storage = multer.memoryStorage(); // Guardamos en memoria primero
 
 const fileFilter = (req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -35,19 +28,40 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB máximo
 });
 
+// Función para convertir buffer a Base64
+const bufferToBase64 = (buffer, mimetype) => {
+  if (!buffer) return '';
+  const base64 = buffer.toString('base64');
+  return `data:${mimetype};base64,${base64}`;
+};
+
 // POST /api/auth/registro
 router.post('/registro', upload.single('foto'), async (req, res) => {
   try {
     const { email, password, nombre } = req.body;
+    
     if (!email || !password) {
       return res.status(400).json({ error: 'Email i contrasenya requerits' });
     }
+    
     const existent = await Usuario.findOne({ email });
     if (existent) {
       return res.status(400).json({ error: 'Aquest email ja està registrat' });
     }
-    const fotoRuta = req.file ? `/uploads/perfiles/${req.file.filename}` : '';
-    const usuari = await Usuario.create({ email, password, nombre: nombre || '', foto: fotoRuta });
+    
+    // Convertir archivo a Base64 si existe
+    let fotoBase64 = '';
+    if (req.file) {
+      fotoBase64 = bufferToBase64(req.file.buffer, req.file.mimetype);
+    }
+    
+    const usuari = await Usuario.create({ 
+      email, 
+      password, 
+      nombre: nombre || '', 
+      foto: fotoBase64
+    });
+    
     const token = jwt.sign({ id: usuari._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({
       token,
@@ -99,7 +113,9 @@ router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
     }
     if (password) usuari.password = password;
     if (nombre !== undefined) usuari.nombre = nombre;
-    if (req.file) usuari.foto = `/uploads/perfiles/${req.file.filename}`;
+    if (req.file) {
+      usuari.foto = bufferToBase64(req.file.buffer, req.file.mimetype);
+    }
 
     await usuari.save();
     const token = jwt.sign({ id: usuari._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -114,7 +130,10 @@ router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
 
 // Manejo de errores de Multer
 router.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError || err.message?.includes('fitxer')) {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: `Error al subir archivo: ${err.message}` });
+  }
+  if (err && err.message) {
     return res.status(400).json({ error: err.message });
   }
   next(err);

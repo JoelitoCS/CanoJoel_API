@@ -40,6 +40,8 @@ router.post('/registro', upload.single('foto'), async (req, res) => {
   try {
     const { email, password, nombre } = req.body;
     
+    console.log('📝 Datos recibidos:', { email, password: '***', nombre, hasFoto: !!req.file });
+    
     if (!email || !password) {
       return res.status(400).json({ error: 'Email i contrasenya requerits' });
     }
@@ -52,6 +54,7 @@ router.post('/registro', upload.single('foto'), async (req, res) => {
     // Convertir archivo a Base64 si existe
     let fotoBase64 = '';
     if (req.file) {
+      console.log('📸 Archivo recibido:', { mimetype: req.file.mimetype, size: req.file.size });
       fotoBase64 = bufferToBase64(req.file.buffer, req.file.mimetype);
     }
     
@@ -62,12 +65,15 @@ router.post('/registro', upload.single('foto'), async (req, res) => {
       foto: fotoBase64
     });
     
+    console.log('✅ Usuario creado:', usuari._id);
+    
     const token = jwt.sign({ id: usuari._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({
       token,
       usuari: { id: usuari._id, email: usuari.email, nombre: usuari.nombre, rol: usuari.rol, foto: usuari.foto }
     });
   } catch (err) {
+    console.error('❌ Error en registro:', err.message, err);
     res.status(400).json({ error: err.message });
   }
 });

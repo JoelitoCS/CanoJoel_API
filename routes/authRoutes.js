@@ -36,11 +36,12 @@ const bufferToBase64 = (buffer, mimetype) => {
 };
 
 // POST /api/auth/registro
-router.post('/registro', upload.single('foto'), async (req, res) => {
+// Usar .any() para permitir archivos opcionales
+router.post('/registro', upload.any(), async (req, res) => {
   try {
     const { email, password, nombre } = req.body;
     
-    console.log('📝 Datos recibidos:', { email, password: '***', nombre, hasFoto: !!req.file });
+    console.log('📝 Datos recibidos:', { email, password: '***', nombre, numFiles: req.files?.length });
     
     if (!email || !password) {
       return res.status(400).json({ error: 'Email i contrasenya requerits' });
@@ -53,9 +54,10 @@ router.post('/registro', upload.single('foto'), async (req, res) => {
     
     // Convertir archivo a Base64 si existe
     let fotoBase64 = '';
-    if (req.file) {
-      console.log('📸 Archivo recibido:', { mimetype: req.file.mimetype, size: req.file.size });
-      fotoBase64 = bufferToBase64(req.file.buffer, req.file.mimetype);
+    const fotoFile = req.files?.[0];
+    if (fotoFile) {
+      console.log('📸 Archivo recibido:', { mimetype: fotoFile.mimetype, size: fotoFile.size });
+      fotoBase64 = bufferToBase64(fotoFile.buffer, fotoFile.mimetype);
     }
     
     const usuari = await Usuario.create({ 
@@ -107,7 +109,7 @@ router.get('/perfil', protegir, async (req, res) => {
 });
 
 // PUT /api/auth/perfil
-router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
+router.put('/perfil', protegir, upload.any(), async (req, res) => {
   try {
     const usuari = req.usuari;
     const { email, password, nombre } = req.body;
@@ -119,8 +121,10 @@ router.put('/perfil', protegir, upload.single('foto'), async (req, res) => {
     }
     if (password) usuari.password = password;
     if (nombre !== undefined) usuari.nombre = nombre;
-    if (req.file) {
-      usuari.foto = bufferToBase64(req.file.buffer, req.file.mimetype);
+    
+    const fotoFile = req.files?.[0];
+    if (fotoFile) {
+      usuari.foto = bufferToBase64(fotoFile.buffer, fotoFile.mimetype);
     }
 
     await usuari.save();

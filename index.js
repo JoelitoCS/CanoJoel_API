@@ -28,13 +28,15 @@ const app = express();
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', FRONTEND_URL || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
 
-// Middleware JSON
-app.use(express.json());
+// Middleware JSON y URL encoded (ANTES de multer)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir archivos estáticos (fotos de perfil, etc.)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

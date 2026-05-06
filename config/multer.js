@@ -7,11 +7,11 @@ import multer from 'multer';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Carpeta correcta on es guardaran els fitxers pujats
 // IMPORTANT: coincideix amb la que crea index.js → /uploads/perfiles
 // Carpeta donde se guardan las imagenes de cervezas y vinos.
 // Luego index.js la expone publicamente con app.use('/uploads', express.static(...)).
-const dest = path.join(__dirname, '../../uploads/productos');
+// Desde /config subimos un nivel hasta la raiz de la API: CanoJoel_API/uploads/productos.
+const dest = path.join(__dirname, '../uploads/productos');
 
 // Crea la carpeta si no existe para que la primera subida no falle.
 fs.mkdirSync(dest, { recursive: true });

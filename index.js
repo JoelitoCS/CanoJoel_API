@@ -50,6 +50,11 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // desde la URL base de la API: https://tu-api.com/uploads/productos/foto.jpg
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Compatibilidad con imagenes subidas antes de corregir la carpeta de multer.
+// Antes se guardaban un nivel por encima del proyecto API, asi que esta linea evita
+// que esas fotos antiguas devuelvan 404 mientras vuelves a subirlas o redepliegas.
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Middleware de error para JSON parsing
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {

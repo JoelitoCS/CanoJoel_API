@@ -10,8 +10,10 @@ router.get("/", getVinos)
 router.get("/:id", getVinoById)
 
 // Rutas protegidas: solo editor o admin
-router.post("/", protegir, autoritzar('editor', 'admin'), createVino)
-router.put("/:id", protegir, autoritzar('editor', 'admin'), updateVino)
+// upload.single('imatge') permite que crear/editar reciban una foto junto a los campos de texto.
+// Si la peticion viene en JSON y no trae archivo, multer la deja pasar sin romper nada.
+router.post("/", protegir, autoritzar('editor', 'admin'), upload.single('imatge'), createVino)
+router.put("/:id", protegir, autoritzar('editor', 'admin'), upload.single('imatge'), updateVino)
 router.delete("/:id", protegir, autoritzar('editor', 'admin'), deleteVino)
 // PATCH /:id/imatge — ordem: primero autoritzar('admin'), después multer (procesa el fichero), después controlador
 // upload.single('imatge') espera un campo del formulario con name="imatge"; el fichero queda a req.file

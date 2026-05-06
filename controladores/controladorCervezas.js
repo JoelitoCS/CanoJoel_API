@@ -5,6 +5,20 @@ import Cerveza from "../modelos/modeloCervezas.js"
 // Comprova si un id té format vàlid de MongoDB ObjectId
 const esIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
 
+// Centraliza la preparacion de datos cuando llega un formulario multipart.
+// req.body contiene los campos de texto y req.file contiene la imagen subida por multer.
+const prepararDatosCerveza = (req) => {
+  const datos = { ...req.body };
+
+  // Si el usuario ha elegido una foto, guardamos solo la ruta relativa en MongoDB.
+  // Asi la API puede cambiar de dominio sin tener que modificar los documentos.
+  if (req.file) {
+    datos.imagen = `uploads/productos/${req.file.filename}`;
+  }
+
+  return datos;
+};
+
 const getCervezas = async (req, res) => {
   try {
     const dades = await Cerveza.find().sort({ createdAt: -1 });
@@ -31,7 +45,8 @@ const getCervezaById = async (req, res) => {
 
 const createCerveza = async (req, res) => {
   try {
-    const nova = await Cerveza.create(req.body);
+    // Acepta JSON normal y tambien multipart/form-data con archivo "imatge".
+    const nova = await Cerveza.create(prepararDatosCerveza(req));
     res.status(201).json(nova);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -43,9 +58,10 @@ const updateCerveza = async (req, res) => {
     return res.status(400).json({ error: 'ID invàlid', id: req.params.id });
   }
   try {
+    // Si llega una imagen nueva, sustituimos el campo imagen; si no, solo se cambian textos.
     const actualitzada = await Cerveza.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      prepararDatosCerveza(req),
       { new: true, runValidators: true }
     );
     if (!actualitzada) {
@@ -81,12 +97,12 @@ const updateCervezaWithImage = async (req, res) => {
 
     // IMPORTANT: desem només la ruta relativa, no la ruta absoluta del sistema operatiu
     // Amb això el client podrà construir la URL pública: /uploads/<filename>
-    const pathImatge = 'uploads/' + req.file.filename;
+    const pathImatge = 'uploads/productos/' + req.file.filename;
 
     // Actualitzem només el camp imatge de la cervesa indicada per id
     const actualitzada = await Cerveza.findByIdAndUpdate(
       req.params.id,
-      { imatge: pathImatge },
+      { imagen: pathImatge },
       { new: true }  // retornar el document amb el camp imatge ja actualitzat
     );
     if (!actualitzada) {

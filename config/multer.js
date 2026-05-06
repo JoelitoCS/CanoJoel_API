@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import multer from 'multer';
 
 // Amb ES Modules no existeix __dirname; es construeix des de import.meta.url
@@ -8,7 +9,12 @@ const __dirname = path.dirname(__filename);
 
 // Carpeta correcta on es guardaran els fitxers pujats
 // IMPORTANT: coincideix amb la que crea index.js → /uploads/perfiles
-const dest = path.join(__dirname, '../../uploads/perfiles');
+// Carpeta donde se guardan las imagenes de cervezas y vinos.
+// Luego index.js la expone publicamente con app.use('/uploads', express.static(...)).
+const dest = path.join(__dirname, '../../uploads/productos');
+
+// Crea la carpeta si no existe para que la primera subida no falle.
+fs.mkdirSync(dest, { recursive: true });
 
 // diskStorage: guardar a disc; destination = carpeta, filename = nom del fitxer
 const storage = multer.diskStorage({
@@ -16,6 +22,7 @@ const storage = multer.diskStorage({
     cb(null, dest);
   },
   filename: (req, file, cb) => {
+    // Nombre unico y sin espacios para evitar colisiones y URLs problematicas.
     const unique = Date.now() + '-' + (file.originalname || 'fitxer');
     cb(null, unique.replace(/\s/g, '-'));
   }

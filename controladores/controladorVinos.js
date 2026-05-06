@@ -4,6 +4,20 @@ import Vino from "../modelos/modeloVinos.js"
 // Comprova si un id té format vàlid de MongoDB ObjectId
 const esIdValid = (id) => mongoose.Types.ObjectId.isValid(id);
 
+// Centraliza la preparacion de datos cuando llega un formulario multipart.
+// req.body contiene los campos de texto y req.file contiene la imagen subida por multer.
+const prepararDatosVino = (req) => {
+  const datos = { ...req.body };
+
+  // Si el usuario ha elegido una foto, guardamos solo la ruta relativa en MongoDB.
+  // Asi la API puede cambiar de dominio sin tener que modificar los documentos.
+  if (req.file) {
+    datos.imagen = `uploads/productos/${req.file.filename}`;
+  }
+
+  return datos;
+};
+
 const getVinos = async (req, res) => {
   try {
     const dades = await Vino.find().sort({ createdAt: -1 });
@@ -30,7 +44,8 @@ const getVinoById = async (req, res) => {
 
 const createVino = async (req, res) => {
   try {
-    const nova = await Vino.create(req.body);
+    // Acepta JSON normal y tambien multipart/form-data con archivo "imatge".
+    const nova = await Vino.create(prepararDatosVino(req));
     res.status(201).json(nova);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -42,9 +57,10 @@ const updateVino = async (req, res) => {
     return res.status(400).json({ error: 'ID invàlid', id: req.params.id });
   }
   try {
+    // Si llega una imagen nueva, sustituimos el campo imagen; si no, solo se cambian textos.
     const actualitzada = await Vino.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      prepararDatosVino(req),
       { new: true, runValidators: true }
     );
     if (!actualitzada) {
@@ -80,7 +96,7 @@ const updateVinoWithImage = async (req, res) => {
 
     // IMPORTANT: desem només la ruta relativa, no la ruta absoluta del sistema operatiu
     // Amb això el client podrà construir la URL pública: /uploads/<filename>
-    const pathImatge = 'uploads/' + req.file.filename;
+    const pathImatge = 'uploads/productos/' + req.file.filename;
 
     // Actualitzem només el camp imatge del vino indicat per id
     const actualitzada = await Vino.findByIdAndUpdate(
